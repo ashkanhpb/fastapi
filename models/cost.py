@@ -1,4 +1,5 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, field_validator
+import  re
 
 
 class Cost(BaseModel):
@@ -7,4 +8,18 @@ class Cost(BaseModel):
     amount: float = Field(gt=0)
 
 
+@field_validator('cost_id')
+def validate_cost_id(v):
+    if v < 0:
+        raise ValueError('cost id must be greater than 0')
+    return v
+
+
+@field_validator('amount')
+def validate_description(v):
+    pattern = r'^\d+(\.\d+)?$'
+    match = re.match(pattern, v)
+    if not match:
+        raise ValueError('cost amount is wrong')
+    return v
 

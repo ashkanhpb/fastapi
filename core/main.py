@@ -9,7 +9,7 @@ app = FastAPI()
 costs_list: list[Cost] = []
 
 
-@app.get("/costs/get_all_costs" ,  response_model=List[Cost])
+@app.get("/costs/get_all_costs", response_model=List[Cost])
 def get_costs():
     return costs_list
 
@@ -26,7 +26,7 @@ def get_cost(cost_id: int):
     )
 
 
-@app.post("/costs/add_cost" ,  response_model=List[Cost])
+@app.post("/costs/add_cost", response_model=List[Cost])
 def add_costs(cost: Cost):
     for c in costs_list:
         if c.cost_id == cost.cost_id:
@@ -35,26 +35,20 @@ def add_costs(cost: Cost):
     return costs_list
 
 
-
-
-
-@app.delete("/costs/delete_cost")
+@app.delete("/costs/delete_cost", response_model=List[Cost])
 def delete_cost(cost_id: int):
     for cost in costs_list:
         if cost.cost_id == cost_id:
             costs_list.remove(cost)
-            return JSONResponse(status_code=201, content=costs_list)
+            return costs_list
         else:
             return JSONResponse({"message": "Cost not found"}, status_code=404)
 
 
-@app.put("/costs/edit_cost")
+@app.put("/costs/edit_cost" , response_model=List[Cost])
 def edit_cost(cost: Cost):
-    for c in costs_list:
-        if c.cost_id==Cost.cost_id:
-                costs_list.remove(c)
-                costs_list.append(cost)
-                return JSONResponse(status_code=202, content=costs_list)
+    for index, c in enumerate(costs_list):
+        if c.cost_id == cost.cost_id:
+            costs_list[index] = cost
+            return costs_list
     return JSONResponse({"message": "Cost not found"}, status_code=404)
-
-
